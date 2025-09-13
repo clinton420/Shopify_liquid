@@ -1,0 +1,108 @@
+{{ 'section-hero.css' | asset_url | stylesheet_tag }}
+
+<section class="hero-banner" id="hero-{{ section.id }}">
+  <div class="hero-container">
+    
+    {% if section.settings.image != blank %}
+      <div class="hero-media">
+        <img 
+          src="{{ section.settings.image | image_url: width: 1920 }}"
+          srcset="{{ section.settings.image | image_url: width: 550 }} 550w,
+                  {{ section.settings.image | image_url: width: 750 }} 750w,
+                  {{ section.settings.image | image_url: width: 1100 }} 1100w,
+                  {{ section.settings.image | image_url: width: 1500 }} 1500w,
+                  {{ section.settings.image | image_url: width: 1920 }} 1920w"
+          sizes="100vw"
+          alt="{{ section.settings.image.alt | escape }}"
+          loading="eager"
+          width="{{ section.settings.image.width }}"
+          height="{{ section.settings.image.height }}"
+          class="hero-image"
+        >
+      </div>
+    {% endif %}
+
+    <div class="hero-content">
+      <div class="page-width">
+        <div class="hero-text">
+          
+          {% if section.settings.title != blank %}
+            <h1 class="hero-title">{{ section.settings.title }}</h1>
+          {% endif %}
+
+          {% if section.settings.subtitle != blank %}
+            <p class="hero-subtitle">{{ section.settings.subtitle }}</p>
+          {% endif %}
+
+          {% if section.settings.button_text != blank %}
+            <div class="hero-actions">
+              <a href="{{ section.settings.button_link | default: '/collections/all' }}" class="hero-button button button--primary">
+                {{ section.settings.button_text }}
+              </a>
+            </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Headline",
+      "default": "Discover Your Natural Glow"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Premium beauty products crafted with natural ingredients for radiant, healthy skin."
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#111827"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner"
+    }
+  ]
+}
+{% endschema %}

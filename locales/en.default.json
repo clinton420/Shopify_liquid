@@ -1,0 +1,70 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "navigation": {
+      "menu": "Menu"
+    },
+    "search": {
+      "search": "Search",
+      "placeholder": "Search products..."
+    },
+    "404": {
+      "title": "Page not found",
+      "subtext": "The page you were looking for does not exist."
+    }
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "refresh_page": "Choosing a selection results in a full page refresh.",
+    "link_messages": {
+      "new_window": "Opens in a new window."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "value_unavailable": "{{ option_value }} is unavailable",
+      "quantity": "Quantity",
+      "sale": "Sale",
+      "quick_add": "Quick add",
+      "loading_3d_model": "Loading 3D model...",
+      "view_in_ar": "View in AR",
+      "3d_model_unavailable": "3D model not available",
+      "complete_routine": "Complete the routine",
+      "ingredients": "Ingredients",
+      "how_to_use": "How to use",
+      "skin_type": "Skin type"
+    }
+  },
+  "templates": {
+    "cart": {
+      "cart": "Cart"
+    }
+  },
+  "sections": {
+    "cart": {
+      "cart_error": "There was an error while updating your cart. Please try again.",
+      "cart_quantity_error_html": "You can only add {{ quantity }} of this item to your cart."
+    }
+  },
+  "customer": {
+    "account_fallback": "Account",
+    "log_in": "Log in"
+  },
+  "newsletter": {
+    "label": "Email address",
+    "success": "Thanks for subscribing!",
+    "button_label": "Subscribe"
+  },
+  "cookie_banner": {
+    "title": "We use cookies",
+    "description": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking \"Accept All\", you consent to our use of cookies.",
+    "accept": "Accept All",
+    "decline": "Decline"
+  }
+}

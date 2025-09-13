@@ -1,0 +1,82 @@
+{%- liquid
+  assign model_url = ''
+  assign model_ios_url = ''
+
+  if media.sources[0].url contains '.glb'
+    assign model_url = media.sources[0].url
+  endif
+  
+  if media.sources[1].url contains '.usdz' 
+    assign model_ios_url = media.sources[1].url
+  endif
+
+  # Fallback to metafields if native 3D media not available
+  unless model_url != blank
+    if product.metafields.media.model_glb != blank
+      assign model_url = product.metafields.media.model_glb
+    endif
+  endunless
+
+  unless model_ios_url != blank
+    if product.metafields.media.model_usdz != blank
+      assign model_ios_url = product.metafields.media.model_usdz
+    endif
+  endunless
+-%}
+
+<div class="product-3d-model" id="model-{{ media.id }}">
+  {% if model_url != blank %}
+    <model-viewer
+      src="{{ model_url }}"
+      {% if model_ios_url != blank %}ios-src="{{ model_ios_url }}"{% endif %}
+      poster="{{ media.preview_image | image_url: width: 800 }}"
+      alt="{{ media.alt | escape }}"
+      shadow-intensity="1"
+      camera-controls
+      auto-rotate
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      class="model-viewer"
+      loading="lazy"
+      reveal="interaction"
+    >
+      <div class="model-loading" slot="poster">
+        <div class="loading-spinner"></div>
+        <p>{{ 'products.product.loading_3d_model' | t }}</p>
+      </div>
+      
+      <button class="ar-button" slot="ar-button">
+        {% render 'icon-ar' %}
+        {{ 'products.product.view_in_ar' | t }}
+      </button>
+      
+      <div class="model-controls" id="model-controls-{{ media.id }}">
+        <button class="model-control" data-action="play">
+          {% render 'icon-play' %}
+        </button>
+        <button class="model-control" data-action="pause">
+          {% render 'icon-pause' %}
+        </button>
+        <button class="model-control" data-action="reset">
+          {% render 'icon-reset' %}
+        </button>
+      </div>
+    </model-viewer>
+
+    {% comment %} Load model-viewer library {% endcomment %}
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
+  {% else %}
+    {% comment %} Fallback if no 3D model available {% endcomment %}
+    <div class="model-fallback">
+      <img 
+        src="{{ media.preview_image | image_url: width: 800 }}"
+        alt="{{ media.alt | escape }}"
+        loading="lazy"
+        width="{{ media.preview_image.width }}"
+        height="{{ media.preview_image.height }}"
+      >
+      <p class="model-unavailable">{{ 'products.product.3d_model_unavailable' | t }}</p>
+    </div>
+  {% endif %}
+</div>

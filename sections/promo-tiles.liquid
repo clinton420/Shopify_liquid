@@ -1,0 +1,121 @@
+{{ 'section-promo-tiles.css' | asset_url | stylesheet_tag }}
+
+<section class="promo-tiles section-padding">
+  <div class="page-width">
+    
+    {% if section.settings.title != blank %}
+      <div class="section-header text-center">
+        <h2 class="section-title">{{ section.settings.title }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="promo-grid">
+      {% for block in section.blocks %}
+        <div class="promo-tile" {{ block.shopify_attributes }}>
+          
+          {% if block.settings.image != blank %}
+            <div class="promo-tile-media">
+              <img 
+                src="{{ block.settings.image | image_url: width: 600 }}"
+                srcset="{{ block.settings.image | image_url: width: 300 }} 300w,
+                        {{ block.settings.image | image_url: width: 450 }} 450w,
+                        {{ block.settings.image | image_url: width: 600 }} 600w"
+                sizes="(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw"
+                alt="{{ block.settings.image.alt | escape }}"
+                loading="lazy"
+                width="{{ block.settings.image.width }}"
+                height="{{ block.settings.image.height }}"
+                class="promo-image"
+              >
+            </div>
+          {% endif %}
+
+          <div class="promo-tile-content">
+            {% if block.settings.title != blank %}
+              <h3 class="promo-title">{{ block.settings.title }}</h3>
+            {% endif %}
+            
+            {% if block.settings.description != blank %}
+              <p class="promo-description">{{ block.settings.description }}</p>
+            {% endif %}
+            
+            {% if block.settings.button_text != blank %}
+              <a href="{{ block.settings.button_link | default: '#' }}" class="promo-button button button--secondary">
+                {{ block.settings.button_text }}
+              </a>
+            {% endif %}
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promo Tiles",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Category"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Promo Tile",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Skincare"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Discover our collection of premium skincare products."
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promo Tiles",
+      "blocks": [
+        {
+          "type": "tile"
+        },
+        {
+          "type": "tile"
+        },
+        {
+          "type": "tile"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

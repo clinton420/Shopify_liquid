@@ -1,0 +1,37 @@
+{
+  "current": {
+    "colors_primary": "#F7D9E3",
+    "colors_secondary": "#CFEDE8",
+    "colors_accent": "#111827",
+    "colors_background": "#FFFFFF", 
+    "colors_background_2": "#F9FAFB",
+    "colors_text": "#111827",
+    "colors_sale": "#EFB9C9",
+    "type_header_font": "assistant_n4",
+    "type_body_font": "assistant_n4",
+    "heading_scale": 100,
+    "body_scale": 100,
+    "page_width": 1200,
+    "spacing_sections": 80,
+    "spacing_grid_horizontal": 30,
+    "spacing_grid_vertical": 30,
+    "card_color_scheme": "background-1",
+    "card_corner_radius": 16,
+    "card_shadow_opacity": 8,
+    "buttons_radius": 12,
+    "buttons_shadow_opacity": 0,
+    "animations_reveal_on_scroll": true,
+    "enable_quick_add": true,
+    "enable_predictive_search": true,
+    "enable_cookie_banner": true,
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "announcement_text": "Free shipping on orders over $75 • Easy returns",
+          "main_menu": "main-menu"
+        }
+      }
+    }
+  }
+}

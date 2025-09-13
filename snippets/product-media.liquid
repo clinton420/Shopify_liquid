@@ -1,0 +1,152 @@
+{%- liquid
+  assign variant_images = product.images | where: 'attached_to_variant?', true | map: 'src'
+  assign has_3d = false
+  
+  for media in product.media
+    if media.media_type == 'model'
+      assign has_3d = true
+      break
+    endif
+  endfor
+-%}
+
+<div class="product-media" id="product-media-{{ product.id }}">
+  
+  {% comment %} 3D Model Viewer (if available) {% endcomment %}
+  {% if has_3d %}
+    <div class="product-3d-toggle">
+      <button class="button button--secondary" id="view-3d-toggle">
+        {% render 'icon-3d' %}
+        {{ 'products.product.view_3d' | t }}
+      </button>
+    </div>
+  {% endif %}
+
+  <div class="product-media-gallery">
+    
+    {% comment %} Main Media Display {% endcomment %}
+    <div class="main-media" id="main-media">
+      {% for media in product.media %}
+        <div 
+          class="media-item {% if forloop.first %}active{% endif %}" 
+          data-media-id="{{ media.id }}"
+          data-media-type="{{ media.media_type }}"
+        >
+          {% case media.media_type %}
+            {% when 'image' %}
+              <img 
+                src="{{ media | image_url: width: 800 }}"
+                srcset="{{ media | image_url: width: 400 }} 400w,
+                        {{ media | image_url: width: 600 }} 600w,
+                        {{ media | image_url: width: 800 }} 800w,
+                        {{ media | image_url: width: 1000 }} 1000w"
+                sizes="(min-width: 750px) 50vw, 100vw"
+                alt="{{ media.alt | escape }}"
+                loading="lazy"
+                width="{{ media.width }}"
+                height="{{ media.height }}"
+                class="product-media-image"
+              >
+            
+            {% when 'video' %}
+              <video 
+                controls 
+                poster="{{ media.preview_image | image_url: width: 800 }}"
+                class="product-media-video"
+              >
+                {% for source in media.sources %}
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                {% endfor %}
+              </video>
+            
+            {% when 'external_video' %}
+              <div class="external-video-wrapper">
+                {{ media | external_video_tag: class: 'product-media-video' }}
+              </div>
+            
+            {% when 'model' %}
+              {% render 'product-model-viewer', media: media %}
+              
+          {% endcase %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% comment %} Thumbnails {% endcomment %}
+    {% if product.media.size > 1 %}
+      <div class="media-thumbnails">
+        <div class="thumbnails-scroll">
+          {% for media in product.media %}
+            <button 
+              class="thumbnail {% if forloop.first %}active{% endif %}"
+              data-media-id="{{ media.id }}"
+              data-media-type="{{ media.media_type }}"
+            >
+              {% case media.media_type %}
+                {% when 'image' %}
+                  <img 
+                    src="{{ media | image_url: width: 120 }}"
+                    alt="{{ media.alt | escape }}"
+                    loading="lazy"
+                    width="120"
+                    height="120"
+                  >
+                {% when 'video' or 'external_video' %}
+                  <img 
+                    src="{{ media.preview_image | image_url: width: 120 }}"
+                    alt="{{ media.alt | escape }}"
+                    loading="lazy"
+                    width="120"
+                    height="120"
+                  >
+                  {% render 'icon-play' %}
+                {% when 'model' %}
+                  <img 
+                    src="{{ media.preview_image | image_url: width: 120 }}"
+                    alt="{{ media.alt | escape }}"
+                    loading="lazy"
+                    width="120"
+                    height="120"
+                  >
+                  {% render 'icon-3d' %}
+              {% endcase %}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  {% comment %} Product Media Controls {% endcomment %}
+  <div class="media-controls">
+    <button class="media-control" id="zoom-toggle">
+      {% render 'icon-zoom' %}
+      <span class="visually-hidden">{{ 'products.product.zoom' | t }}</span>
+    </button>
+    
+    {% if product.media.size > 1 %}
+      <button class="media-control" id="fullscreen-toggle">
+        {% render 'icon-fullscreen' %}
+        <span class="visually-hidden">{{ 'products.product.fullscreen' | t }}</span>
+      </button>
+    {% endif %}
+  </div>
+
+</div>
+
+<script type="application/json" id="product-media-data">
+  {
+    "productId": {{ product.id | json }},
+    "mediaItems": [
+      {% for media in product.media %}
+        {
+          "id": {{ media.id | json }},
+          "type": {{ media.media_type | json }},
+          "alt": {{ media.alt | json }},
+          "src": {{ media | image_url: width: 1000 | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+</script>

@@ -1,0 +1,112 @@
+{{ 'section-benefits-bar.css' | asset_url | stylesheet_tag }}
+
+<div class="benefits-bar color-{{ section.settings.color_scheme }} gradient section-padding">
+  <div class="page-width">
+    <div class="benefits-grid">
+      {% for block in section.blocks %}
+        <div class="benefit-item" {{ block.shopify_attributes }}>
+          {% if block.settings.icon != blank %}
+            <div class="benefit-icon">
+              {{ block.settings.icon }}
+            </div>
+          {% endif %}
+          <div class="benefit-content">
+            <h3 class="benefit-title">{{ block.settings.title | escape }}</h3>
+            <p class="benefit-description">{{ block.settings.description | escape }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Benefits Bar",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "primary",
+          "label": "Primary"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondary"
+        }
+      ],
+      "default": "background-2",
+      "label": "Color scheme"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "settings": [
+        {
+          "type": "text",
+          "id": "icon",
+          "label": "Icon (SVG code or emoji)",
+          "default": "🚚"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Free Shipping"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "Description",
+          "default": "On orders over $75"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Benefits Bar",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "🚚",
+            "title": "Free Shipping",
+            "description": "On orders over $75"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "🇨🇦",
+            "title": "Canada-wide",
+            "description": "Fast delivery nationwide"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "icon": "↩️",
+            "title": "Easy Returns",
+            "description": "30-day return policy"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

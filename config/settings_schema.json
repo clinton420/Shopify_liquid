@@ -1,0 +1,312 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Minimalist Beauty",
+    "theme_version": "1.0.0",
+    "theme_author": "Your Store",
+    "theme_documentation_url": "https://support.shopify.com/",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Primary Colors"
+      },
+      {
+        "type": "color",
+        "id": "colors_primary",
+        "default": "#F7D9E3",
+        "label": "Primary (Blossom Pink)"
+      },
+      {
+        "type": "color",
+        "id": "colors_secondary",
+        "default": "#CFEDE8",
+        "label": "Secondary (Jade Mint)"
+      },
+      {
+        "type": "color",
+        "id": "colors_accent",
+        "default": "#111827",
+        "label": "Accent (Charcoal)"
+      },
+      {
+        "type": "header",
+        "content": "Background Colors"
+      },
+      {
+        "type": "color",
+        "id": "colors_background",
+        "default": "#FFFFFF",
+        "label": "Background"
+      },
+      {
+        "type": "color",
+        "id": "colors_background_2",
+        "default": "#F9FAFB",
+        "label": "Secondary background"
+      },
+      {
+        "type": "color",
+        "id": "colors_text",
+        "default": "#111827",
+        "label": "Text"
+      },
+      {
+        "type": "header",
+        "content": "Sale & Badges"
+      },
+      {
+        "type": "color",
+        "id": "colors_sale",
+        "default": "#EFB9C9",
+        "label": "Sale badge (Rose)"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Fonts"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_header_font",
+        "default": "assistant_n4",
+        "label": "Heading font",
+        "info": "Inter is recommended for this theme"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_body_font",
+        "default": "assistant_n4", 
+        "label": "Body font",
+        "info": "Inter is recommended for this theme"
+      },
+      {
+        "type": "range",
+        "id": "heading_scale",
+        "min": 100,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "label": "Heading scale",
+        "default": 100
+      },
+      {
+        "type": "range",
+        "id": "body_scale",
+        "min": 100,
+        "max": 130,
+        "step": 5,
+        "unit": "%",
+        "label": "Body scale",
+        "default": 100
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "min": 1000,
+        "max": 1600,
+        "step": 100,
+        "unit": "px",
+        "label": "Page width",
+        "default": 1200
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Spacing between sections",
+        "default": 80
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_horizontal",
+        "min": 4,
+        "max": 40,
+        "step": 4,
+        "unit": "px",
+        "label": "Grid horizontal spacing",
+        "default": 30
+      },
+      {
+        "type": "range",
+        "id": "spacing_grid_vertical",
+        "min": 4,
+        "max": 40,
+        "step": 4,
+        "unit": "px",
+        "label": "Grid vertical spacing",
+        "default": 30
+      }
+    ]
+  },
+  {
+    "name": "Cards",
+    "settings": [
+      {
+        "type": "select",
+        "id": "card_color_scheme",
+        "options": [
+          {
+            "value": "background-1",
+            "label": "Background 1"
+          },
+          {
+            "value": "background-2", 
+            "label": "Background 2"
+          },
+          {
+            "value": "primary",
+            "label": "Primary"
+          }
+        ],
+        "default": "background-1",
+        "label": "Color scheme"
+      },
+      {
+        "type": "range",
+        "id": "card_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "card_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Shadow opacity",
+        "default": 8
+      }
+    ]
+  },
+  {
+    "name": "Buttons",
+    "settings": [
+      {
+        "type": "range",
+        "id": "buttons_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Corner radius",
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "buttons_shadow_opacity",
+        "min": 0,
+        "max": 100,
+        "step": 5,
+        "unit": "%",
+        "label": "Shadow opacity",
+        "default": 0
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Social accounts"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook_link",
+        "label": "Facebook",
+        "info": "https://www.facebook.com/shopify"
+      },
+      {
+        "type": "text", 
+        "id": "social_instagram_link",
+        "label": "Instagram",
+        "info": "https://www.instagram.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok_link",
+        "label": "TikTok", 
+        "info": "https://www.tiktok.com/@shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter_link",
+        "label": "X (Twitter)",
+        "info": "https://twitter.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube_link", 
+        "label": "YouTube",
+        "info": "https://www.youtube.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest_link",
+        "label": "Pinterest",
+        "info": "https://www.pinterest.com/shopify"
+      }
+    ]
+  },
+  {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "text",
+        "id": "google_analytics_id",
+        "label": "Google Analytics 4 ID",
+        "info": "Format: G-XXXXXXXXXX"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_cookie_banner",
+        "label": "Enable cookie consent banner",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Features",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "animations_reveal_on_scroll",
+        "default": true,
+        "label": "Reveal animations on scroll"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_quick_add",
+        "default": true,
+        "label": "Enable quick add to cart"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_predictive_search",
+        "default": true,
+        "label": "Enable predictive search"
+      }
+    ]
+  }
+]

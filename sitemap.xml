@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>{{ shop.url }}</loc>
+    <lastmod>{{ 'now' | date: '%Y-%m-%d' }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Collections -->
+  {% for collection in collections %}
+    {% unless collection.handle == 'all' %}
+      <url>
+        <loc>{{ shop.url }}{{ collection.url }}</loc>
+        <lastmod>{{ collection.updated_at | date: '%Y-%m-%d' }}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+      </url>
+    {% endunless %}
+  {% endfor %}
+
+  <!-- Products -->
+  {% for product in collections.all.products %}
+    <url>
+      <loc>{{ shop.url }}{{ product.url }}</loc>
+      <lastmod>{{ product.updated_at | date: '%Y-%m-%d' }}</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  {% endfor %}
+
+  <!-- Pages -->
+  {% for page in pages %}
+    <url>
+      <loc>{{ shop.url }}{{ page.url }}</loc>
+      <lastmod>{{ page.updated_at | date: '%Y-%m-%d' }}</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
+    </url>
+  {% endfor %}
+
+  <!-- Blog posts -->
+  {% for article in blogs.news.articles %}
+    <url>
+      <loc>{{ shop.url }}{{ article.url }}</loc>
+      <lastmod>{{ article.updated_at | date: '%Y-%m-%d' }}</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
+    </url>
+  {% endfor %}
+</urlset>

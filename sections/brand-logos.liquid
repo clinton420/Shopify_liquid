@@ -1,0 +1,421 @@
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width section-{{ section.id }}-padding">
+    {%- unless section.settings.title == blank -%}
+      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin">
+        <h2 class="title inline-richtext {{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+          {{ section.settings.title }}
+        </h2>
+      </div>
+    {%- endunless -%}
+
+    <slider-component class="slider-mobile-gutter">
+      <ul
+        id="Slider-{{ section.id }}"
+        class="multicolumn-list contains-content-container grid grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop{% if section.settings.swipe_on_mobile %} slider slider--tablet grid--peek{% endif %}"
+        role="list"
+      >
+        {%- liquid
+          assign highest_ratio = 0
+          for block in section.blocks
+            if block.settings.image.aspect_ratio > highest_ratio
+              assign highest_ratio = block.settings.image.aspect_ratio
+            endif
+          endfor
+        -%}
+        {%- for block in section.blocks -%}
+          {%- assign empty_column = '' -%}
+          {%- if block.settings.image == blank and block.settings.title == blank and block.settings.text == blank and block.settings.link_label == blank -%}
+            {%- assign empty_column = ' multicolumn-list__item--empty' -%}
+          {%- endif -%}
+
+          <li
+            id="Slide-{{ section.id }}-{{ forloop.index }}"
+            class="multicolumn-list__item grid__item{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{% if section.settings.column_alignment == 'center' %} center{% endif %}{{ empty_column }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+            {{ block.shopify_attributes }}
+            {% if settings.animations_reveal_on_scroll %}
+              data-cascade
+              style="--animation-order: {{ forloop.index }};"
+            {% endif %}
+          >
+            <div class="multicolumn-card content-container">
+              {%- if block.settings.image != blank -%}
+                <div class="multicolumn-card__image-wrapper multicolumn-card__image-wrapper--{{ section.settings.image_width }}-width{% if section.settings.image_ratio != 'adapt' %} multicolumn-card__image-wrapper--{{ section.settings.image_ratio }}-ratio{% endif %}">
+                  <div
+                    class="media media--transparent media--{{ section.settings.image_ratio }}"
+                    {% if section.settings.image_ratio == 'adapt' %}
+                      style="padding-bottom: {{ 1 | divided_by: highest_ratio | times: 100 }}%;"
+                    {% endif %}
+                  >
+                    {%- liquid
+                      assign number_of_columns = section.settings.columns_desktop
+                      assign number_of_columns_mobile = section.settings.columns_mobile
+                      assign grid_space_desktop = number_of_columns | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                      assign grid_space_tablet = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | plus: 100 | append: 'px'
+                      assign grid_space_mobile = number_of_columns_mobile | minus: 1 | times: settings.spacing_grid_horizontal | divided_by: 2 | plus: 30 | append: 'px'
+                      if section.settings.swipe_on_mobile
+                        assign grid_space_mobile = 'calc(100vw - 30px)'
+                      endif
+                    -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 3200
+                      | image_tag:
+                        widths: '50, 75, 100, 150, 200, 300, 400, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3200',
+                        sizes: '(min-width: 990px) calc((100vw - 130px) / 4), (min-width: 750px) calc((100vw - 120px) / 2), calc((100vw - 35px) / 2)',
+                        alt: block.settings.image.alt
+                      | escape
+                    }}
+                  </div>
+                </div>
+              {%- endif -%}
+              <div class="multicolumn-card__info">
+                {%- if block.settings.title != blank -%}
+                  <h3 class="inline-richtext">{{ block.settings.title }}</h3>
+                {%- endif -%}
+                {%- if block.settings.text != blank -%}
+                  <div class="rte">{{ block.settings.text }}</div>
+                {%- endif -%}
+                {%- if block.settings.link_label != blank -%}
+                  <a
+                    class="link animate-arrow"
+                    {% if block.settings.link == blank %}
+                      role="link" aria-disabled="true"
+                    {% else %}
+                      href="{{ block.settings.link }}"
+                    {% endif %}
+                  >
+                    {{ block.settings.link_label | escape }}
+                    <span class="icon-wrap">&nbsp;{% render 'icon-arrow' %}</span>
+                  </a>
+                {%- endif -%}
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.swipe_on_mobile -%}
+        <div class="slider-buttons no-js-hidden medium-hide">
+          <button
+            type="button"
+            class="slider-button slider-button--prev"
+            name="previous"
+            aria-label="{{ 'general.slider.previous_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+          <div class="slider-counter caption">
+            <span class="slider-counter--current">1</span>
+            <span aria-hidden="true"> / </span>
+            <span class="slider-counter--total">{{ section.blocks.size }}</span>
+          </div>
+          <button
+            type="button"
+            class="slider-button slider-button--next"
+            name="next"
+            aria-label="{{ 'general.slider.next_slide' | t }}"
+          >
+            {% render 'icon-caret' %}
+          </button>
+        </div>
+      {%- endif -%}
+    </slider-component>
+    <div class="center{% if section.settings.swipe_on_mobile %} small-hide medium-hide{% endif %}">
+      {%- if section.settings.button_label != blank -%}
+        <a
+          class="button"
+          {% if section.settings.button_link == blank %}
+            role="link" aria-disabled="true"
+          {% else %}
+            href="{{ section.settings.button_link }}"
+          {% endif %}
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand Logos",
+  "class": "section",
+  "tag": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "default": "Featured Brands",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small"
+        },
+        {
+          "value": "h1",
+          "label": "Medium"
+        },
+        {
+          "value": "h0",
+          "label": "Large"
+        }
+      ],
+      "default": "h1",
+      "label": "Heading size"
+    },
+    {
+      "type": "select",
+      "id": "image_width",
+      "options": [
+        {
+          "value": "third",
+          "label": "One third of column"
+        },
+        {
+          "value": "half",
+          "label": "One half of column"
+        },
+        {
+          "value": "full",
+          "label": "Full width of column"
+        }
+      ],
+      "default": "full",
+      "label": "Image width"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "circle",
+          "label": "Circle"
+        }
+      ],
+      "default": "adapt",
+      "label": "Image ratio"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "select",
+      "id": "column_alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        }
+      ],
+      "default": "center",
+      "label": "Column alignment"
+    },
+    {
+      "type": "select",
+      "id": "background_style",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "primary",
+          "label": "Primary"
+        }
+      ],
+      "default": "primary",
+      "label": "Background"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "Accent 1"
+        },
+        {
+          "value": "accent-2",
+          "label": "Accent 2"
+        },
+        {
+          "value": "background-1",
+          "label": "Background 1"
+        },
+        {
+          "value": "background-2",
+          "label": "Background 2"
+        },
+        {
+          "value": "inverse",
+          "label": "Inverse"
+        }
+      ],
+      "default": "background-1",
+      "label": "Color scheme"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1 column"
+        },
+        {
+          "value": "2",
+          "label": "2 columns"
+        }
+      ],
+      "default": "2",
+      "label": "Number of columns on mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Enable swipe on mobile"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Brand Logo",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Brand Logo"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "default": "Brand Name",
+          "label": "Heading"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Description"
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand Logos",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,77 @@
+{{ 'section-featured-collection.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign collection = collections[section.settings.collection] | default: collections.all
+  assign products_to_show = section.settings.products_to_show | default: 8
+-%}
+
+<section class="featured-collection section-padding">
+  <div class="page-width">
+    
+    <div class="section-header text-center">
+      <h2 class="section-title">{{ section.settings.title | default: collection.title }}</h2>
+      {% if section.settings.description != blank %}
+        <p class="section-description">{{ section.settings.description }}</p>
+      {% endif %}
+    </div>
+
+    <div class="products-grid products-grid--featured">
+      {% for product in collection.products limit: products_to_show %}
+        {% render 'product-card', product: product, quick_add: true %}
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_view_all and collection.products.size > products_to_show %}
+      <div class="section-footer text-center">
+        <a href="{{ collection.url }}" class="button button--secondary">
+          {{ 'sections.featured_collection.view_all' | t }}
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Best Sellers"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 2,
+      "default": 8,
+      "label": "Number of products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "default": true,
+      "label": "Show 'View all' button"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

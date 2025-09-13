@@ -1,0 +1,303 @@
+{% comment %}
+  Collection template with advanced filtering and AJAX pagination
+{% endcomment %}
+
+<div class="collection-page" id="collection-{{ collection.id }}">
+  <div class="page-width">
+    
+    <!-- Collection Header -->
+    <div class="collection-header section-padding">
+      <div class="collection-info">
+        <h1 class="collection-title">{{ collection.title | escape }}</h1>
+        {% if collection.description != blank %}
+          <div class="collection-description">
+            {{ collection.description }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Collection Controls -->
+    <div class="collection-controls">
+      <div class="collection-filters">
+        <button class="filter-toggle button button--secondary" id="filter-toggle">
+          <span>Filters</span>
+          <span class="filter-count" id="filter-count"></span>
+        </button>
+        
+        <!-- Filter Drawer -->
+        <div class="filter-drawer" id="filter-drawer">
+          <div class="filter-header">
+            <h3>Filters</h3>
+            <button class="filter-close" id="filter-close">×</button>
+          </div>
+          
+          <form class="filter-form" id="collection-filters">
+            <!-- Price Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Price</h4>
+              <div class="price-range">
+                <div class="price-inputs">
+                  <input type="number" id="price-min" placeholder="Min" min="0">
+                  <span>-</span>
+                  <input type="number" id="price-max" placeholder="Max" min="0">
+                </div>
+                <div class="price-slider">
+                  <input type="range" id="price-range" min="0" max="1000" step="10" value="1000">
+                </div>
+              </div>
+            </div>
+
+            <!-- Brand Filter -->
+            {% if collection.all_vendors.size > 0 %}
+              <div class="filter-group">
+                <h4 class="filter-title">Brand</h4>
+                <div class="filter-options">
+                  {% for vendor in collection.all_vendors %}
+                    <label class="filter-option">
+                      <input type="checkbox" name="vendor" value="{{ vendor | escape }}">
+                      <span class="checkmark"></span>
+                      <span class="option-label">{{ vendor | escape }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- Product Type Filter -->
+            {% if collection.all_types.size > 0 %}
+              <div class="filter-group">
+                <h4 class="filter-title">Category</h4>
+                <div class="filter-options">
+                  {% for type in collection.all_types %}
+                    <label class="filter-option">
+                      <input type="checkbox" name="type" value="{{ type | escape }}">
+                      <span class="checkmark"></span>
+                      <span class="option-label">{{ type | escape }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+
+            <!-- Availability Filter -->
+            <div class="filter-group">
+              <h4 class="filter-title">Availability</h4>
+              <div class="filter-options">
+                <label class="filter-option">
+                  <input type="checkbox" name="availability" value="in_stock">
+                  <span class="checkmark"></span>
+                  <span class="option-label">In Stock</span>
+                </label>
+                <label class="filter-option">
+                  <input type="checkbox" name="availability" value="on_sale">
+                  <span class="checkmark"></span>
+                  <span class="option-label">On Sale</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="filter-actions">
+              <button type="button" class="button button--secondary" id="clear-filters">Clear All</button>
+              <button type="submit" class="button button--primary">Apply Filters</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="collection-sort">
+        <select class="sort-select" id="collection-sort">
+          <option value="manual">Featured</option>
+          <option value="best-selling">Best Selling</option>
+          <option value="title-ascending">A-Z</option>
+          <option value="title-descending">Z-A</option>
+          <option value="price-ascending">Price: Low to High</option>
+          <option value="price-descending">Price: High to Low</option>
+          <option value="created-descending">Newest</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Collection Grid -->
+    <div class="collection-grid-wrapper">
+      <div class="collection-grid" id="collection-grid">
+        {% paginate collection.products by 24 %}
+          {% for product in collection.products %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        {% endpaginate %}
+      </div>
+
+      <!-- Load More Button -->
+      {% if paginate.pages > 1 %}
+        <div class="collection-pagination">
+          {% if paginate.next %}
+            <button class="button button--secondary load-more-btn" id="load-more" data-url="{{ paginate.next.url }}">
+              Load More Products
+            </button>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- No Results -->
+    <div class="collection-empty" id="collection-empty" style="display: none;">
+      <div class="empty-content text-center">
+        <h3>No products found</h3>
+        <p>Try adjusting your filters or search terms.</p>
+        <button class="button button--primary" id="clear-all-filters">Clear All Filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const filterToggle = document.getElementById('filter-toggle');
+    const filterDrawer = document.getElementById('filter-drawer');
+    const filterClose = document.getElementById('filter-close');
+    const filterForm = document.getElementById('collection-filters');
+    const collectionGrid = document.getElementById('collection-grid');
+    const loadMoreBtn = document.getElementById('load-more');
+    const sortSelect = document.getElementById('collection-sort');
+    const clearFiltersBtn = document.getElementById('clear-filters');
+    const clearAllFiltersBtn = document.getElementById('clear-all-filters');
+
+    // Filter drawer toggle
+    filterToggle.addEventListener('click', function() {
+      filterDrawer.classList.toggle('active');
+    });
+
+    filterClose.addEventListener('click', function() {
+      filterDrawer.classList.remove('active');
+    });
+
+    // Close drawer when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!filterDrawer.contains(e.target) && !filterToggle.contains(e.target)) {
+        filterDrawer.classList.remove('active');
+      }
+    });
+
+    // Clear filters
+    clearFiltersBtn.addEventListener('click', function() {
+      filterForm.reset();
+      updateFilterCount();
+    });
+
+    clearAllFiltersBtn.addEventListener('click', function() {
+      filterForm.reset();
+      updateFilterCount();
+      loadProducts();
+    });
+
+    // Filter form submission
+    filterForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      loadProducts();
+      filterDrawer.classList.remove('active');
+    });
+
+    // Sort change
+    sortSelect.addEventListener('change', function() {
+      loadProducts();
+    });
+
+    // Load more products
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', function() {
+        const url = this.dataset.url;
+        loadMoreProducts(url);
+      });
+    }
+
+    // Update filter count
+    function updateFilterCount() {
+      const checkedInputs = filterForm.querySelectorAll('input:checked');
+      const count = checkedInputs.length;
+      const countElement = document.getElementById('filter-count');
+      
+      if (count > 0) {
+        countElement.textContent = `(${count})`;
+        countElement.style.display = 'inline';
+      } else {
+        countElement.style.display = 'none';
+      }
+    }
+
+    // Load products with current filters
+    function loadProducts() {
+      const formData = new FormData(filterForm);
+      const sortValue = sortSelect.value;
+      
+      let url = new URL(window.location);
+      url.searchParams.set('sort_by', sortValue);
+      
+      // Add filter parameters
+      for (let [key, value] of formData.entries()) {
+        url.searchParams.append(key, value);
+      }
+
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newGrid = doc.getElementById('collection-grid');
+          
+          if (newGrid) {
+            collectionGrid.innerHTML = newGrid.innerHTML;
+            updateFilterCount();
+            
+            // Update load more button
+            const newLoadMore = doc.getElementById('load-more');
+            if (newLoadMore) {
+              loadMoreBtn.dataset.url = newLoadMore.dataset.url;
+              loadMoreBtn.style.display = 'block';
+            } else {
+              loadMoreBtn.style.display = 'none';
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error loading products:', error);
+        });
+    }
+
+    // Load more products
+    function loadMoreProducts(url) {
+      loadMoreBtn.textContent = 'Loading...';
+      loadMoreBtn.disabled = true;
+
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newProducts = doc.querySelectorAll('.product-card');
+          
+          newProducts.forEach(product => {
+            collectionGrid.appendChild(product);
+          });
+
+          // Update load more button
+          const newLoadMore = doc.getElementById('load-more');
+          if (newLoadMore) {
+            loadMoreBtn.dataset.url = newLoadMore.dataset.url;
+            loadMoreBtn.textContent = 'Load More Products';
+            loadMoreBtn.disabled = false;
+          } else {
+            loadMoreBtn.style.display = 'none';
+          }
+        })
+        .catch(error => {
+          console.error('Error loading more products:', error);
+          loadMoreBtn.textContent = 'Load More Products';
+          loadMoreBtn.disabled = false;
+        });
+    }
+
+    // Initialize filter count
+    updateFilterCount();
+  });
+</script>

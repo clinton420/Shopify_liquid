@@ -1,0 +1,111 @@
+/* Newsletter Signup Section */
+.newsletter-signup {
+  background: var(--gradient-bg);
+}
+
+.newsletter-content {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+.newsletter-header {
+  margin-bottom: 3rem;
+}
+
+.newsletter-title {
+  font-size: clamp(2.8rem, 4vw, 4.8rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.6rem 0;
+  color: var(--color-accent);
+}
+
+.newsletter-subheading {
+  font-size: 1.8rem;
+  color: rgba(var(--color-foreground-rgb), 0.8);
+  margin: 0;
+  line-height: 1.6;
+}
+
+.newsletter-form-wrapper {
+  display: flex;
+  gap: 1rem;
+  max-width: 50rem;
+  margin: 0 auto 2rem auto;
+}
+
+@media (max-width: 549px) {
+  .newsletter-form-wrapper {
+    flex-direction: column;
+  }
+}
+
+.newsletter-form-wrapper .field {
+  flex: 1;
+  margin: 0;
+}
+
+.newsletter-input {
+  width: 100%;
+  padding: 1.4rem 2rem;
+  border: 1px solid rgba(var(--color-foreground-rgb), 0.2);
+  border-radius: var(--input-radius);
+  font-size: 1.4rem;
+  background: var(--color-background);
+  transition: border-color 0.2s ease;
+}
+
+.newsletter-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.newsletter-button {
+  background: var(--gradient-cta);
+  color: white;
+  border: none;
+  padding: 1.4rem 3rem;
+  border-radius: var(--button-radius);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  transform: translateY(0);
+}
+
+.newsletter-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover);
+}
+
+@media (max-width: 549px) {
+  .newsletter-button {
+    width: 100%;
+  }
+}
+
+.newsletter-message {
+  margin-top: 1rem;
+  padding: 1rem 1.5rem;
+  border-radius: var(--input-radius);
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.newsletter-message--success {
+  background: var(--color-secondary);
+  color: var(--color-accent);
+  border: 1px solid rgba(var(--color-accent-rgb), 0.2);
+}
+
+.newsletter-message--error {
+  background: rgba(var(--color-sale-rgb), 0.1);
+  color: var(--color-accent);
+  border: 1px solid rgba(var(--color-sale-rgb), 0.3);
+}
+
+.newsletter-privacy {
+  font-size: 1.2rem;
+  color: rgba(var(--color-foreground-rgb), 0.6);
+  margin: 2rem 0 0 0;
+  text-align: center;
+}
